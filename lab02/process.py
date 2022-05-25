@@ -7,7 +7,7 @@ from textrank4zh import TextRank4Keyword, TextRank4Sentence
 
 
 video_path = '访谈类测试视频.mp4'
-output_path = 'output.mp4'
+output_path = 'output1.mp4'
 APP_ID = '9ee34da4'
 SECRET_KEY = 'd23bf17205de4a0dc7819bb827fdc5fb'
 text_list_path = 'text_list.txt'

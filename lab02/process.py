@@ -11,6 +11,7 @@ output_path = 'output1.mp4'
 APP_ID = '9ee34da4'
 SECRET_KEY = 'd23bf17205de4a0dc7819bb827fdc5fb'
 text_list_path = 'text_list1.txt'
+max_len = 70
 
 
 # 提取音频
@@ -60,8 +61,18 @@ for summ in summarize:
     ends = np.append(ends, end_timepoints[text_idx_ed])
 
 _, ret_index = np.unique(begins, return_index=True)
+ret_index.sort()
 ends = ends[ret_index]
 begins = begins[ret_index]
+
+i = 0
+while i < len(begins) and sum(ends[:i+1]-begins[:i+1]) < max_len*1000:
+    i = i + 1
+
+begins = begins[:i]
+ends = ends[:i]
+begins.sort()
+ends.sort()
 
 # print('output length(s): %d' % sum(ends-begins))
 
@@ -77,5 +88,6 @@ fw.write("".join(['file ' + 'cut%d'%i + '.mp4\n' for i in range(len(begins))]))
 fw.close()
 
 os.system('ffmpeg -f concat -i list.txt -c copy ' + output_path)
+os.system('ffmpeg -i '+ output_path +' -vf \'scale=720:-1,pad=720:1280:0:(1280-ih)/2:black\' ' + ' vertical_' + output_path)
 
 os.system('rm list.txt audio.wav ' + ''.join([' cut%d'%i + '.mp4' for i in range(len(begins))]))

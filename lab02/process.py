@@ -1,17 +1,18 @@
 import numpy as np
 import os
 from demo import RequestApi
-import jiagu
+# import jiagu
 import time
 from textrank4zh import TextRank4Keyword, TextRank4Sentence
 
 
 video_path = '访谈类测试视频.mp4'
 output_path = 'output1.mp4'
+text_list_path = 'text_list1.txt'
 APP_ID = '9ee34da4'
 SECRET_KEY = 'd23bf17205de4a0dc7819bb827fdc5fb'
-text_list_path = 'text_list1.txt'
-max_len = 70
+
+max_len = 60
 
 
 # 提取音频
@@ -20,7 +21,6 @@ os.system('ffmpeg -i '+ video_path +' -vn audio.wav')
 
 # 语音识别
 if os.path.exists(text_list_path) is False:
-    assert(False)
     api = RequestApi(appid=APP_ID, secret_key=SECRET_KEY, upload_file_path='audio.wav')
     res = api.all_api_request()
     text_list = eval(res['data'])
@@ -56,7 +56,7 @@ for summ in summarize:
         text_idx_bg = text_idx_bg - 1
     begins = np.append(begins, begin_timepoints[text_idx_bg])
     text_idx_ed = np.max(np.argwhere(np.array(text_accum_len)<=char_idx+len(summ['sentence'])))
-    while text_idx_ed < len(text_list) and (begin_timepoints[text_idx_ed+1]-end_timepoints[text_idx_ed]) < 50:
+    while text_idx_ed < len(text_list)-1 and (begin_timepoints[text_idx_ed+1]-end_timepoints[text_idx_ed]) < 50:
         text_idx_ed = text_idx_ed + 1
     ends = np.append(ends, end_timepoints[text_idx_ed])
 
